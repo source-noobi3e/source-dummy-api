@@ -5,6 +5,7 @@ import BodyParser from 'body-parser'
 import mongoose from 'mongoose'
 import { SuggestionModal } from './DummyModal.js'
 import { ContributionModel } from './ContributionModal.js'
+import { StaffModal } from './StaffModal.js'
 
 const PORT = '2020'
 const app = express()
@@ -183,6 +184,100 @@ app.post('/api/v1/contribution', async (req, res) => {
       const contributionId = body.addInfo.id
 
       await SuggestionModal.findByIdAndDelete(contributionId)
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          rMessage: 'data deleted successfully',
+        },
+      })
+    } else {
+      res.send('data saved')
+    }
+  } catch (err) {
+    console.error(err)
+  }
+})
+
+app.post('/api/v1/staff', async (req, res) => {
+  try {
+    const { body } = req
+    console.log(body)
+
+    // ADD
+    if (body.eventID === '0001') {
+      const newStaffMember = body.addInfo
+      console.log(newStaffMember)
+
+      await StaffModal.create(newStaffMember)
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          rMessage: 'Data inserted successfully',
+        },
+      })
+    }
+
+    // SELECT
+    if (body.eventID === '0002') {
+      const data = await StaffModal.find().select('-__v')
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          length: data.length,
+          rMessage: 'Data selected successfully',
+          data: data,
+        },
+      })
+    }
+
+    // UPDATE
+    if (body.eventID === '0003') {
+      const updatedStaff = body.addInfo
+
+      const data = await StaffModal.findById(updatedStaff.id)
+
+      data.fullname = updatedStaff.fullname
+        ? updatedStaff.fullname
+        : data.fullname
+
+      data.email = updatedStaff.email ? updatedStaff.email : data.email
+
+      data.date = updatedStaff.date ? updatedStaff.date : data.date
+
+      data.phonenumber = updatedStaff.phonenumber
+        ? updatedStaff.phonenumber
+        : data.phonenumber
+
+      data.username = updatedStaff.username
+        ? updatedStaff.username
+        : data.username
+
+      data.password = updatedStaff.password
+        ? updatedStaff.password
+        : data.password
+
+      data.officeaddress = updatedStaff.officeaddress
+        ? updatedStaff.officeaddress
+        : data.officeaddress
+
+      await data.save()
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          rMessage: 'Data updated successfully',
+        },
+      })
+    }
+
+    // DELETE
+    if (body.eventID === '0004') {
+      const staffId = body.addInfo.id
+
+      await StaffModal.findByIdAndDelete(staffId)
 
       return res.status(200).json({
         rStatus: 0,
