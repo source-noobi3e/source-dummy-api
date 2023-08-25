@@ -33,7 +33,7 @@ app.post('/api/v1/suggestion', async (req, res) => {
 
       return res.status(200).json({
         rStatus: 0,
-        addInfo: {
+        rData: {
           rMessage: 'data inserted successfully',
         },
       })
@@ -45,10 +45,10 @@ app.post('/api/v1/suggestion', async (req, res) => {
 
       return res.status(200).json({
         rStatus: 0,
-        addInfo: {
+        rData: {
           length: data.length,
           rMessage: 'Data selected successfully',
-          rData: data,
+          data: data,
         },
       })
     }
@@ -71,7 +71,7 @@ app.post('/api/v1/suggestion', async (req, res) => {
 
       return res.status(200).json({
         rStatus: 0,
-        addInfo: {
+        rData: {
           rMessage: 'Data updated successfully',
         },
       })
@@ -85,7 +85,7 @@ app.post('/api/v1/suggestion', async (req, res) => {
 
       return res.status(200).json({
         rStatus: 0,
-        addInfo: {
+        rData: {
           rMessage: 'data deleted successfully',
         },
       })
