@@ -342,7 +342,8 @@ app.post('/api/v1/campaign', async (req, res) => {
         ? updatedCampaign.campaigntype
         : data.campaigntype
 
-      data.date = updatedCampaign.date ? updatedCampaign.date : data.date
+      data.from = updatedCampaign.from ? updatedCampaign.from : data.from
+      data.to = updatedCampaign.to ? updatedCampaign.to : data.to
 
       data.forwardto = updatedCampaign.forwardto
         ? updatedCampaign.forwardto
