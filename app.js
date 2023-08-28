@@ -6,6 +6,7 @@ import mongoose from 'mongoose'
 import { SuggestionModal } from './DummyModal.js'
 import { ContributionModel } from './ContributionModal.js'
 import { StaffModal } from './StaffModal.js'
+import { CampaignModal } from './campaignModal.js'
 
 const PORT = '2020'
 const app = express()
@@ -278,6 +279,100 @@ app.post('/api/v1/staff', async (req, res) => {
       const staffId = body.addInfo.id
 
       await StaffModal.findByIdAndDelete(staffId)
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          rMessage: 'data deleted successfully',
+        },
+      })
+    } else {
+      res.send('data saved')
+    }
+  } catch (err) {
+    console.error(err)
+  }
+})
+
+app.post('/api/v1/campaign', async (req, res) => {
+  try {
+    const { body } = req
+    console.log(body)
+
+    // ADD
+    if (body.eventID === '0001') {
+      const newCampaign = body.addInfo
+      console.log(newCampaign)
+
+      await CampaignModal.create(newCampaign)
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          rMessage: 'Data inserted successfully',
+        },
+      })
+    }
+
+    // SELECT
+    if (body.eventID === '0002') {
+      const data = await CampaignModal.find().select('-__v')
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          length: data.length,
+          rMessage: 'Data selected successfully',
+          data: data,
+        },
+      })
+    }
+
+    // UPDATE
+    if (body.eventID === '0003') {
+      const updatedCampaign = body.addInfo
+
+      const data = await CampaignModal.findById(updatedCampaign.id)
+
+      data.campaignname = updatedCampaign.campaignname
+        ? updatedCampaign.campaignname
+        : data.campaignname
+
+      data.campaigntype = updatedCampaign.campaigntype
+        ? updatedCampaign.campaigntype
+        : data.campaigntype
+
+      data.date = updatedCampaign.date ? updatedCampaign.date : data.date
+
+      data.forwardto = updatedCampaign.forwardto
+        ? updatedCampaign.forwardto
+        : data.forwardto
+
+      data.email = updatedCampaign.email ? updatedCampaign.email : data.email
+
+      data.description = updatedCampaign.description
+        ? updatedCampaign.description
+        : data.description
+
+      data.socialmedia = updatedCampaign.socialmedia
+        ? updatedCampaign.socialmedia
+        : data.socialmedia
+
+      await data.save()
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          rMessage: 'Data updated successfully',
+        },
+      })
+    }
+
+    // DELETE
+    if (body.eventID === '0004') {
+      const campaignId = body.addInfo.id
+
+      await CampaignModal.findByIdAndDelete(campaignId)
 
       return res.status(200).json({
         rStatus: 0,
