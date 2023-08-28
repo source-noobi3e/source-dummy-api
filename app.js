@@ -7,6 +7,7 @@ import { SuggestionModal } from './DummyModal.js'
 import { ContributionModel } from './ContributionModal.js'
 import { StaffModal } from './StaffModal.js'
 import { CampaignModal } from './campaignModal.js'
+import { ComplaintModal } from './complaintModal.js'
 
 const PORT = '2020'
 const app = express()
@@ -374,6 +375,104 @@ app.post('/api/v1/campaign', async (req, res) => {
       const campaignId = body.addInfo.id
 
       await CampaignModal.findByIdAndDelete(campaignId)
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          rMessage: 'data deleted successfully',
+        },
+      })
+    } else {
+      res.send('data saved')
+    }
+  } catch (err) {
+    console.error(err)
+  }
+})
+
+app.post('/api/v1/complaint', async (req, res) => {
+  try {
+    const { body } = req
+    console.log(body)
+
+    // ADD
+    if (body.eventID === '0001') {
+      const newComplaint = body.addInfo
+      console.log(newComplaint)
+
+      await ComplaintModal.create(newComplaint)
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          rMessage: 'Data inserted successfully',
+        },
+      })
+    }
+
+    // SELECT
+    if (body.eventID === '0002') {
+      const data = await ComplaintModal.find().select('-__v')
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          length: data.length,
+          rMessage: 'Data selected successfully',
+          data: data,
+        },
+      })
+    }
+
+    // UPDATE
+    if (body.eventID === '0003') {
+      const updatedComplaint = body.addInfo
+
+      const data = await ComplaintModal.findById(updatedComplaint.id)
+
+      data.complaintname = updatedComplaint.complaintname
+        ? updatedComplaint.complaintname
+        : data.complaintname
+
+      data.district = updatedComplaint.district
+        ? updatedComplaint.district
+        : data.district
+
+      data.description = updatedComplaint.description
+        ? updatedComplaint.description
+        : data.description
+
+      data.pincode = updatedComplaint.pincode
+        ? updatedComplaint.pincode
+        : data.pincode
+
+      data.state = updatedComplaint.state ? updatedComplaint.state : data.state
+
+      data.image = updatedComplaint.image ? updatedComplaint.image : data.image
+
+      data.complaintno = updatedComplaint.complaintno
+        ? updatedComplaint.complaintno
+        : data.complaintno
+
+      data.category = updatedComplaint.category
+        ? updatedComplaint.category
+        : data.category
+
+      await data.save()
+
+      return res.status(200).json({
+        rStatus: 0,
+        rData: {
+          rMessage: 'Data updated successfully',
+        },
+      })
+    }
+
+    // DELETE
+    if (body.eventID === '0004') {
+      const complaintId = body.addInfo.id
+
+      await ComplaintModal.findByIdAndDelete(complaintId)
 
       return res.status(200).json({
         rStatus: 0,
