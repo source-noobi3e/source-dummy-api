@@ -3,11 +3,12 @@ import express from 'express'
 import cors from 'cors'
 import BodyParser from 'body-parser'
 import mongoose from 'mongoose'
-import { SuggestionModal } from './DummyModal.js'
-import { ContributionModel } from './ContributionModal.js'
+import { SuggestionModal } from './models/DummyModal.js'
+import { ContributionModel } from './models/ContributionModal.js'
 import { StaffModal } from './StaffModal.js'
-import { CampaignModal } from './campaignModal.js'
-import { ComplaintModal } from './complaintModal.js'
+import { CampaignModal } from './models/campaignModal.js'
+import { ComplaintModal } from './models/complaintModal.js'
+import { manageDevelopment } from './controllers/developmentController.js'
 
 const PORT = '2020'
 const app = express()
@@ -487,6 +488,8 @@ app.post('/api/v1/complaint', async (req, res) => {
     console.error(err)
   }
 })
+
+app.post('/api/v1/developement', manageDevelopment)
 
 mongoose
   .connect(
